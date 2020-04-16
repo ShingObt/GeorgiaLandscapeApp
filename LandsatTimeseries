@@ -1,0 +1,207 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var lt8sr = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
+    l5 = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR"),
+    NAIP = ee.ImageCollection("USDA/NAIP/DOQQ"),
+    lt7t1 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
+    checkpoints = /* color: #1cffdf */ee.Geometry.MultiPoint(
+        [[-82.36368656158447, 30.9999773841126],
+         [-81.3702392578125, 31.298501438004223],
+         [-84.04541015625, 32.15236189465576]]),
+    table = ee.FeatureCollection("users/sobata5632/p2015"),
+    browsing = /* color: #d63000 */ee.Geometry.Point([-81.7357613737671, 31.600638824438395]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+//**********************************************************************
+//* Project           : Landsat imagery visualization
+//**
+//* Program name      : simplelt578ArbitraryPoint
+//*
+//* Author            : Shingo Obata
+//*
+//* Date created      : 2019-04-02
+//*
+//* Description       : This GEE script is written to visualize the time series Landsat imagery (1984-2018) on a arbitrary poiint on the earth.
+                      //The User sets lat and lon of a arbitrary points on line 21. Then the map pane shows the landsat imagery centered on the selected location.
+                      //If NAIP imagery is available in a year, it is overlaid over the Landsat imagery.
+                      //Time series change in the visible bands are plotted on the Console pane. 
+//|**********************************************************************
+//============================
+// Parameter setting
+//============================
+//座標の指定.緯度経度を指定することでその場所へとマップがズームされる.
+//ピンを移動して場所を指定したい場合は以下の3行をコメントアウトした上で"browsing" featureを地図上で地図上でドラッグアンドロップして任意の地点に移動させる任意の地点に移動させる。 
+
+var browsing=ee.Geometry.Point([
+-82.597023, 31.277184
+])
+
+//マップ上のスライダーの初期設定年を設定
+var startyear=2010
+//Set the central point of the map
+Map.centerObject(browsing,17);
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//以降の行は変更の必要なし
+//以降の行は変更の必要なし
+//以降の行は変更の必要なし
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//============================
+//set parameters
+//==========================
+{
+var stepwise=4
+var year=1987//77
+var startmonth=4//special treatment between 1994-1996 as imagery 1995 contains many clouds. In that season, mosaicking starts from April. Rest of the years, it starts from August. Length of mosaicking is the same over 2 groups.
+var mosaicLength=5
+
+}
+//===============================================
+// NAIP imagery setup
+//===============================================
+{
+var bands_naip=['R','G','B']
+var NAIP=NAIP
+//.filterBounds(centering)// for accuracy assessment
+.filterBounds(browsing)// for check arbitrary point
+.select(bands_naip)
+print(NAIP)
+}
+//================================================
+// Landsat 5 processing
+//================================================
+{
+var bands=['B3','B2','B1','pixel_qa']
+var lt5sr = l5
+    .filterBounds(browsing)
+    .filterMetadata("CLOUD_COVER","less_than",10)
+    .select(bands)
+var series5 = lt5sr.map(function(image) {
+  var cfmask= image.select('pixel_qa');
+    return image.updateMask(cfmask.eq(66))
+    .rename('Red','Green','Blue','pixel_qa');;
+});
+}
+//================================================
+// Landsat 7 processing
+//================================================
+{
+var bands=['B3','B2','B1','pixel_qa']
+var lt7 = lt7t1
+    .filterBounds(browsing)
+    .filterDate("2011-01-01","2019-12-31")
+    .filterMetadata("CLOUD_COVER","less_than",10)
+    .select(bands)
+var series7 = lt7.map(function(image) {
+  var cfmask= image.select('pixel_qa');
+    return image.updateMask(cfmask.eq(66))
+    .rename('Red','Green','Blue','pixel_qa');
+});
+}
+//================================================
+// Landsat 8 processing
+//================================================
+{
+var bands=['B4','B3','B2','pixel_qa']
+var lt8sr = lt8sr
+    .filterBounds(browsing)
+    .select(bands)
+    print(lt8sr)
+var series = lt8sr.map(function(image) {
+  var pqa= image.select('pixel_qa');
+  var ret=image.updateMask(pqa.eq(322))
+  .rename('Red','Green','Blue','pixel_qa');
+  return ret
+    //return image.updateMask(pqa.eq(322));
+});
+
+var lt58=ee.ImageCollection(series5.merge(series7)
+//.merge(series)
+)
+print(lt58)
+}
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+// A helper function to show the image for a given year on the default map.
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+var showLayer = function(year) {
+  Map.layers().reset();//reset the code first
+  
+  
+  // Mosaic image
+  var date = ee.Date.fromYMD(year, startmonth, 30);
+  var dateRange = ee.DateRange(date, date.advance(mosaicLength, 'month'));//mosaicLength defines the length of months imagery are taken.
+  var image = lt58
+            .filterDate(dateRange)
+            .mosaic();
+  var image_naip=NAIP
+            .filterDate(dateRange)
+            .first();
+
+  // Map Landsat
+  Map.addLayer({
+    eeObject: ee.Image(image),
+    visParams: {
+      'bands':['Red','Green','Blue'],
+      min:100,
+      max:1500,
+      gamma: [0.95, 1.5, 1.4]
+      //palette:['000000', 'FFFF00', 'FFA500', 'FF4500', 'FF0000']
+    },
+    name: String(year)
+  });
+  // Map NAIP
+    Map.addLayer({
+    eeObject: ee.Image(image_naip),
+    visParams: {
+      'bands':['R','G','B'],
+      gamma: [0.95, 1.5, 1.4]
+      //palette:['000000', 'FFFF00', 'FFA500', 'FF4500', 'FF0000']
+    },
+    name: "NAIP"
+  });
+  Map.addLayer(browsing,{color:'FFFF00'},"point");
+  Map.addLayer(table.geometry(),{color:'FFFF00'})
+
+}
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+// Layers
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+//========================================================================
+// Create a label and slider.
+//========================================================================
+var label = ui.Label('Landsat 5, 7, & 8 RGB composite -annual');
+var slider = ui.Slider({
+  min: 1984,
+  max: 2020,
+  step: 1,
+  onChange: showLayer,
+  style: {stretch: 'horizontal'}
+});
+//========================================================================
+// Create a panel that contains both the slider and the label.
+//========================================================================
+var panel = ui.Panel({
+  widgets: [label, slider],
+  layout: ui.Panel.Layout.flow('vertical'),
+  style: {
+    position: 'top-center',
+    padding: '7px'
+  }
+});
+// Add the panel to the map.
+Map.add(panel);
+var year=startyear
+slider.setValue(year);
+
+var tc_chart = ui.Chart.image.series(lt58.select("Red"),
+    browsing, ee.Reducer.mean(),30)
+    .setOptions({
+      title: 'Time series change in red band of Landsat on the point',
+      lineWidth: 1,
+      pointSize: 3,
+})
+print(tc_chart)
