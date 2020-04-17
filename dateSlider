@@ -12,11 +12,15 @@ var lt8sr = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
           [-83.1059802872747, 33.51268042822552],
           [-83.1059802872747, 34.292302513480344]]], null, false),
     tiger = ee.FeatureCollection("TIGER/2018/States"),
-    disturbanceyear = ee.Image("users/sobata5632/DisturbanceMap/wholescene");
+    disturbanceyear = ee.Image("users/sobata5632/junk3/WholeStateMasked_GABoundary");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var ga=tiger.filterMetadata("NAME","equals","Georgia")
 var elev=ee.Image('CGIAR/SRTM90_V4').clip(ga)
 var distyear=disturbanceyear.clip(ga)
+//================================================
+// Landsat 5 processing
+//================================================
+{
 var bands=['B3','B2','B1','pixel_qa']
 var lt5sr = l5
     .filterDate("1984-01-01","2013-01-01")
@@ -27,7 +31,7 @@ var series5 = lt5sr.map(function(image) {
     return image.updateMask(cfmask.eq(66))
     .rename('Red','Green','Blue','pixel_qa');;
 });
-
+}
 //================================================
 // Landsat 7 processing
 //================================================
@@ -57,7 +61,7 @@ var series = lt8sr.map(function(image) {
   return ret
     return image.updateMask(pqa.eq(322));
 });
-
+}
 var collection=ee.ImageCollection(
   series5
   .merge(series7)
@@ -67,7 +71,7 @@ var collection=ee.ImageCollection(
   })
 print(collection,"image collection")
 
-}
+
 
 
 
@@ -94,6 +98,8 @@ var showMosaic = function(range) {
     var layer3=ui.Map.Layer(distyear, {min:1987,max:2016,palette:['000000', 'FFFF00', 'FFA500', 'FF4500', 'FF0000']}, "Last disturbance year");
     Map.layers().set(0, layer);
     Map.layers().set(1, layer2);
+    Map.layers().set(2, layer3);
+
 
   });
 };
@@ -111,8 +117,8 @@ var dateRange = ee.DateRange(start, end).evaluate(function(range) {
   Map.add(dateSlider.setValue(now));
 });
 
-var checkbox2 = ui.Checkbox('Show SRTM layer', true);
-checkbox.onChange(function(checked) {
+var checkbox2 = ui.Checkbox('Show Last disturbance year layer', true);
+checkbox2.onChange(function(checked) {
   // Shows or hides the first map layer based on the checkbox's value.
   Map.layers().get(2).setShown(checked);
 });
@@ -161,7 +167,7 @@ Map.onClick(function(coords) {
 
   // Add (or replace) the third widget in the panel by
   // manipulating the widgets list.
-  panel.widgets().set(3, chart);
+  panel.widgets().set(6, chart);
 });
 
 // Add the panel to the ui.root.
