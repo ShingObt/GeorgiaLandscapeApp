@@ -119,10 +119,10 @@ var series = lt8sr.map(function(image) {
     //return image.updateMask(pqa.eq(322));
 });
 
-var lt58=ee.ImageCollection(series5.merge(series7)
-//.merge(series)
-)
-print(lt58)
+var lt58=ee.ImageCollection(
+  series5
+  .merge(series7)
+  .merge(series))
 }
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // A helper function to show the image for a given year on the default map.
