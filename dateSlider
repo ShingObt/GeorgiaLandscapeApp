@@ -11,11 +11,12 @@ var lt8sr = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
           [-84.8473132950872, 33.51268042822552],
           [-83.1059802872747, 33.51268042822552],
           [-83.1059802872747, 34.292302513480344]]], null, false),
-    tiger = ee.FeatureCollection("TIGER/2018/States");
+    tiger = ee.FeatureCollection("TIGER/2018/States"),
+    disturbanceyear = ee.Image("users/sobata5632/DisturbanceMap/wholescene");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var ga=tiger.filterMetadata("NAME","equals","Georgia")
-Map.addLayer(ga)
 var elev=ee.Image('CGIAR/SRTM90_V4').clip(ga)
+var distyear=disturbanceyear.clip(ga)
 var bands=['B3','B2','B1','pixel_qa']
 var lt5sr = l5
     .filterDate("1984-01-01","2013-01-01")
@@ -88,8 +89,9 @@ var showMosaic = function(range) {
   // Asynchronously compute the name of the composite.  Display it.
   range.start().get('year').evaluate(function(name) {
     var visParams = {bands: ['Red', 'Green', 'Blue'], min: 100,max:1500};
-    var layer = ui.Map.Layer(image, visParams, name + ' composite');
-    var layer2 = ui.Map.Layer(elev, {min:0,max:1000}, "SRTM Digital Elevation Data Version 4");
+    var layer = ui.Map.Layer(image, visParams, name + ' Landsat time series Jun-Aug composite');
+    var layer2 = ui.Map.Layer(elev, {min:0,max:1000,palette:['000000', 'FFFF00', 'FFA500', 'FF4500', 'FF0000']}, "SRTM Digital Elevation Data Version 4");
+    var layer3=ui.Map.Layer(distyear, {min:1987,max:2016,palette:['000000', 'FFFF00', 'FFA500', 'FF4500', 'FF0000']}, "Last disturbance year");
     Map.layers().set(0, layer);
     Map.layers().set(1, layer2);
 
@@ -109,22 +111,43 @@ var dateRange = ee.DateRange(start, end).evaluate(function(range) {
   Map.add(dateSlider.setValue(now));
 });
 
-
+var checkbox2 = ui.Checkbox('Show SRTM layer', true);
+checkbox.onChange(function(checked) {
+  // Shows or hides the first map layer based on the checkbox's value.
+  Map.layers().get(2).setShown(checked);
+});
+var checkbox = ui.Checkbox('Show SRTM layer', true);
+checkbox.onChange(function(checked) {
+  // Shows or hides the first map layer based on the checkbox's value.
+  Map.layers().get(1).setShown(checked);
+});
+var checkbox0 = ui.Checkbox('Show Landsat time series layer', true);
+checkbox0.onChange(function(checked) {
+  // Shows or hides the first map layer based on the checkbox's value.
+  Map.layers().get(0).setShown(checked);
+});
 Map.setCenter(-84.4161, 33.7529, 8);
 Map.style().set('cursor', 'crosshair');
 // Create an empty panel in which to arrange widgets.
 // The layout is vertical flow by default.
-var panel = ui.Panel({style: {width: '400px'}})
-    .add(ui.Label('Click on the map'));
+var panel = ui.Panel({style: {width: '400px',position: "top-right"}})
+    .add(ui.Label('Click on the map'))
+panel.widgets().set(3,checkbox)
+panel.widgets().set(4,checkbox0)
+panel.widgets().set(5,checkbox2)
+  //   panel.style().set('color', 'red');
+  // panel.style().set('fontWeight', 'bold');
 Map.onClick(function(coords) {
   // Create or update the location label (the second widget in the panel)
   var location = 'lon: ' + coords.lon.toFixed(2) + ' ' +
                  'lat: ' + coords.lat.toFixed(2);
-  panel.widgets().set(1, ui.Label("You are point of interest is "+location));
+  panel.widgets().set(4, ui.Label("You are point of interest is "+location));
+  // panel.widgets().set(3, checkbox);
+  // panel.widgets().set(4, checkbox0);
 
   // Add a red dot to the map where the user clicked.
   var point = ee.Geometry.Point(coords.lon, coords.lat);
-  Map.layers().set(1, ui.Map.Layer(point, {color: 'FF0000'}));
+  Map.layers().set(2, ui.Map.Layer(point, {color: 'FF0000'},"Point of interest"));
 
   // Create a chart of NDVI over time.
   var chart = ui.Chart.image.series(collection.select("Red"), point, ee.Reducer.mean(), 200)
@@ -138,17 +161,9 @@ Map.onClick(function(coords) {
 
   // Add (or replace) the third widget in the panel by
   // manipulating the widgets list.
-  panel.widgets().set(2, chart);
+  panel.widgets().set(3, chart);
 });
 
 // Add the panel to the ui.root.
 ui.root.add(panel);
 
-
-var checkbox = ui.Checkbox('Show SRTM layer', true);
-checkbox.onChange(function(checked) {
-  // Shows or hides the first map layer based on the checkbox's value.
-  Map.layers().get(1).setShown(checked);
-});
-
-print(checkbox);
