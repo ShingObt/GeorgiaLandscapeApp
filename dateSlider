@@ -2,9 +2,20 @@
 var lt8sr = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
     l5 = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR"),
     NAIP = ee.ImageCollection("USDA/NAIP/DOQQ"),
-    lt7t1 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR");
+    lt7t1 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
+    geometry = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-84.8473132950872, 34.292302513480344],
+          [-84.8473132950872, 33.51268042822552],
+          [-83.1059802872747, 33.51268042822552],
+          [-83.1059802872747, 34.292302513480344]]], null, false),
+    tiger = ee.FeatureCollection("TIGER/2018/States");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-
+var ga=tiger.filterMetadata("NAME","equals","Georgia")
+Map.addLayer(ga)
+var elev=ee.Image('CGIAR/SRTM90_V4').clip(ga)
 var bands=['B3','B2','B1','pixel_qa']
 var lt5sr = l5
     .filterDate("1984-01-01","2013-01-01")
@@ -50,6 +61,9 @@ var collection=ee.ImageCollection(
   series5
   .merge(series7)
   .merge(series))
+  .map(function(image){
+    return image.clip(ga)
+  })
 print(collection,"image collection")
 
 }
@@ -63,10 +77,8 @@ var end = ee.Date("2019-12-31").format();
 
 // Run this function on a change of the dateSlider.
 var showMosaic = function(range) {
-  print(range.start(),range.end())
   var start_leafon=range.start().advance(3, 'month')
   var end_leafon=range.start().advance(8,"month")
-  print(start_leafon,end_leafon)
   // var mosaic = ee.Algorithms.Landsat.simpleComposite({
   //   collection: collection.filterDate(start_leafon, end_leafon)
   // });
@@ -77,7 +89,10 @@ var showMosaic = function(range) {
   range.start().get('year').evaluate(function(name) {
     var visParams = {bands: ['Red', 'Green', 'Blue'], min: 100,max:1500};
     var layer = ui.Map.Layer(image, visParams, name + ' composite');
+    var layer2 = ui.Map.Layer(elev, {min:0,max:1000}, "SRTM Digital Elevation Data Version 4");
     Map.layers().set(0, layer);
+    Map.layers().set(1, layer2);
+
   });
 };
 
@@ -88,7 +103,52 @@ var dateRange = ee.DateRange(start, end).evaluate(function(range) {
     end: range['dates'][1],
     value: null,
     period: 365,
-    onChange: showMosaic
+    onChange: showMosaic,
+    style: {width: '400px',position: "bottom-left"}
   });
   Map.add(dateSlider.setValue(now));
 });
+
+
+Map.setCenter(-84.4161, 33.7529, 8);
+Map.style().set('cursor', 'crosshair');
+// Create an empty panel in which to arrange widgets.
+// The layout is vertical flow by default.
+var panel = ui.Panel({style: {width: '400px'}})
+    .add(ui.Label('Click on the map'));
+Map.onClick(function(coords) {
+  // Create or update the location label (the second widget in the panel)
+  var location = 'lon: ' + coords.lon.toFixed(2) + ' ' +
+                 'lat: ' + coords.lat.toFixed(2);
+  panel.widgets().set(1, ui.Label("You are point of interest is "+location));
+
+  // Add a red dot to the map where the user clicked.
+  var point = ee.Geometry.Point(coords.lon, coords.lat);
+  Map.layers().set(1, ui.Map.Layer(point, {color: 'FF0000'}));
+
+  // Create a chart of NDVI over time.
+  var chart = ui.Chart.image.series(collection.select("Red"), point, ee.Reducer.mean(), 200)
+      .setOptions({
+        title: 'Red band Over Time',
+        vAxis: {title: 'Red band'},
+        lineWidth: 1,
+        pointSize: 3,
+      });
+      
+
+  // Add (or replace) the third widget in the panel by
+  // manipulating the widgets list.
+  panel.widgets().set(2, chart);
+});
+
+// Add the panel to the ui.root.
+ui.root.add(panel);
+
+
+var checkbox = ui.Checkbox('Show SRTM layer', true);
+checkbox.onChange(function(checked) {
+  // Shows or hides the first map layer based on the checkbox's value.
+  Map.layers().get(1).setShown(checked);
+});
+
+print(checkbox);
