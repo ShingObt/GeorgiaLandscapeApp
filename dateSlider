@@ -110,10 +110,6 @@ var collection=ee.ImageCollection(
 var collection=collection.map(function(image){
   return image.addBands(image.normalizedDifference(["NIR","Red"])).rename("NIR",'Red','Green','Blue','pixel_qa',"NDVI");
 })
-print(collection,"image collection")
-
-
-
 
 
 // Use the start of the collection and now to bound the slider.
@@ -171,12 +167,17 @@ checkbox.onChange(function(checked) {
   // Shows or hides the first map layer based on the checkbox's value.
   Map.layers().get(0).setShown(checked);
 });
+var checkbox3 = ui.Checkbox('Show Growing stock volume in path 17 row 38 in WRS-2', true);
+checkbox3.onChange(function(checked) {
+  // Shows or hides the first map layer based on the checkbox's value.
+  Map.layers().get(2).setShown(checked);
+});
 var checkbox0 = ui.Checkbox('Show Landsat time series layer', true);
 checkbox0.onChange(function(checked) {
   // Shows or hides the first map layer based on the checkbox's value.
-  Map.layers().get(2).setShown(checked);
-  var ltsStatus=checked
+  Map.layers().get(3).setShown(checked);
 });
+
 Map.setCenter(-84.4161, 33.7529, 8);
 Map.style().set('cursor', 'crosshair');
 // Create an empty panel in which to arrange widgets.
@@ -198,26 +199,26 @@ var panel = ui.Panel({style: {width: '400px',position: "top-right"}})
       style:{fontWeight:"bold",fontSize:"14px"}
     }))
 panel.widgets().set(4,checkbox0)
-panel.widgets().set(5,checkbox2)
-panel.widgets().set(6,checkbox)
+panel.widgets().set(5,checkbox3)
+panel.widgets().set(6,checkbox2)
+panel.widgets().set(7,checkbox)
   //   panel.style().set('color', 'red');
   // panel.style().set('fontWeight', 'bold');
 Map.onClick(function(coords) {
   // Create or update the location label (the second widget in the panel)
   var location = 'lon: ' + coords.lon.toFixed(2) + ' ' +
                  'lat: ' + coords.lat.toFixed(2);
-  panel.widgets().set(7, ui.Label("Your point of interest is "+location));
+  panel.widgets().set(8, ui.Label("Your point of interest is "+location));
   // Add a red dot to the map where the user clicked.
   var point = ee.Geometry.Point(coords.lon, coords.lat);
-  Map.layers().set(3, ui.Map.Layer(point, {color: 'FF0000'},"Point of interest"));
+  Map.layers().set(4, ui.Map.Layer(point, {color: 'FF0000'},"Point of interest"));
   var dy=distyear.reduceRegion(ee.Reducer.mean(),point,30)
   var el=elev.reduceRegion(ee.Reducer.mean(),point,30)
   var gsv=gsvMap_mask.reduceRegion(ee.Reducer.mean(),point,30)
 
-  print(gsv)
-  panel.widgets().set(8, ui.Label("The last disturbance year: "+dy.get('b1').getInfo()));
-  panel.widgets().set(9, ui.Label("Elevation: "+el.get('elevation').getInfo()));
-  panel.widgets().set(10, ui.Label("Growing stock volume (m3/ha): "+gsv.get('b1').getInfo()));
+  panel.widgets().set(9, ui.Label("The last disturbance year: "+dy.get('b1').getInfo()));
+  panel.widgets().set(10, ui.Label("Elevation: "+el.get('elevation').getInfo()));
+  panel.widgets().set(11, ui.Label("Growing stock volume (m3/ha): "+gsv.get('b1').getInfo()));
   // Create a chart of NDVI over time.
   var chart = ui.Chart.image.series(collection.select("NDVI"), point, ee.Reducer.mean(), 200)
       .setOptions({
@@ -230,10 +231,9 @@ Map.onClick(function(coords) {
 
   // Add (or replace) the third widget in the panel by
   // manipulating the widgets list.
-  panel.widgets().set(11, chart);
+  panel.widgets().set(12, chart);
 });
 
 // Add the panel to the ui.root.
-print(checkbox0.getValue())
 
 ui.root.add(panel);
