@@ -2,19 +2,14 @@
 
 ![gaga](data)
 
-The app is available from [here](https://shingobt.github.io/visualization/flexdashboard).
+The app is available from [here](https://sobata5632.users.earthengine.app/view/georgia-landscape).
 
 ## About this project
 
-This interactve web-app project was initially conducted as a class project in Programming for GIS ([GEOG 6590/6590L](http://bulletin.uga.edu/link.aspx?cid=GEOG4590-4590L/6590-6590L)) taught at [Department of Geography, University of Georgia](https://geography.uga.edu/) in Fall 2018. Although the data collection was completed as of 2018, extensive works related to the development of the web-app was completed in winter 2020.
 
-The main purpose of this project is to provide the dataset and tools to analyse the characteristics of two major restaurant chains in Japan. Through the data collection and spatial analysis of their preferences of the store location, I aimed at revealing their business strategy. Also, it is expected from this project that the users of this web-app can launch their own analysis of the chains. 
+Among the states in the southeastern United States, Georgia has the largest area of timberland. The plantations in Georgia consist predominantly of loblolly pine (Pinus taeda L.), which is the dominant commercial tree species in the southeastern United States. The continuous efforts to increase plantation volume yields have led to the shortening the pine plantation rotations to 20-25 years. Because of the warm and humid climate, the characteristics of the forestland, and common forest management practices, the forest land-scape in Georgia evolves rapidly, showing significant changes over relatively short periods of time. The pertinent question regarding the welfare of Georgia forests is whether they are managed on a sustainable basis.
 
-
-The first chain is [Yoshinoya](https://www.yoshinoya.com/en/), which is a Japanese multinational aliment chain, and therefore the second-largest chain of gyūdon (beef bowl) restaurants. The chain was established in Japan in 1899. The number of its store is 1195 as of winter 2020. Another chain is Starbucks Coffee Japan. 
-
-[Starbucks Coffee Japan](https://www.starbucks.co.jp/en/index.html) was established in October 1995, Since the opening of its first store on August 2, 1996, in the Ginza district of Tokyo, the chain has expanded rapidly throughout the country and has reached 1530 stores as of the end of December 2019.
-
+This web-app shows the spatial forest resource information that provides the fundamental data to analyze the sustainability of the forest resources in Georgia. 
 
 
 ## How to use
@@ -43,6 +38,13 @@ You can:
 
 ### Interactive table
 
+This web-app is composed of 4 layers. Users can retrieve the information stored in each layer by manipulating the slider or clicking an arbitrary point on a map. Four layers are; 
+
+- The time series Landsat 5/7/8 composite between 1987-2019. Entire Georgia is covered by this dataset.
+- The estimated growing stock volume (m3/ha). Only the area equivalent to path 17 row 38 in WRS-2 is covered. This layer is created as a part of my graduate study.
+- The last disturbance year of forest stands between 1987-2016. This layer is created as a part of my graduate study and summarized in [^1][^2]. 
+- SRTM Digital Elevation Data Version 4. 
+
 You can:
 
 * Filter each column by sort in boxes under the header of each column.
@@ -50,6 +52,10 @@ You can:
 * Adjust the columns are visible by clicking the Visibility button for columns.
 * Click the 'CSV' or 'Excel' button to save the filtered data to the.csv or.xlsx file
 * See how many entries are left in the bottom-left after screening, where it states 'Showing X to Y Z entries'
+
+
+[^1]: Obata, Shingo et al. 2019. “Preliminary Analysis of Forest Stand Disturbances in Coastal Georgia (USA) Using Landsat Time Series Stacked Imagery.” FORMATH 18: 1–11.
+[^1]: Obata, Shingo, Pete Bettinger, Chris J. Cieszewski, and Roger C. Lowe III. 2020. “Mapping Forest Disturbances between 1987-2016 Using All Available Time Series Landsat TM/ETM+ Imagery: Developing a Reliable Methodology for Georgia, United States.” Forests 11(3): 335.
 
 
 ## Development
