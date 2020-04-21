@@ -1,7 +1,7 @@
 # Georgia Forest resources visualization: With Google Earth Engine App 
 
-![gaga](data/capture1.JPG)
-![gaga](data/capture2.JPG)
+![gaga](data/Capture1.JPG)
+![gaga](data/Capture2.JPG)
 
 
 The app is available from [here](https://sobata5632.users.earthengine.app/view/georgia-landscape).
