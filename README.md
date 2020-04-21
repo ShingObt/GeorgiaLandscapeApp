@@ -16,16 +16,26 @@ This web-app shows the spatial forest resource information that provides the fun
 
 This web-app is composed of 4 layers. Users can retrieve the information stored in each layer by manipulating the slider or clicking an arbitrary point on a map. Four layers are; 
 
-- The time series Landsat 5/7/8 composite between 1987-2019. Entire Georgia is covered by this dataset.
+- The time series Landsat 5/7/8 composite between 1987-2019. Entire Georgia is covered by this dataset. For selected year, Landsat imagery taken in the middle of the leaf-on season (June to Augst) are used to create annual composite.  
 - The estimated growing stock volume (m3/ha). Only the area equivalent to path 17 row 38 in WRS-2 is covered. This layer is created as a part of my graduate study.
-- The last disturbance year of forest stands between 1987-2016. This layer is created as a part of my graduate study and summarized in the published papers https://www.mdpi.com/1999-4907/11/3/335,  https://www.jstage.jst.go.jp/article/formath/18/0/18_001/_article/-char/en
+- The last disturbance year of forest stands between 1987-2016. This layer is created as a part of my graduate study and summarized in the published papers https://www.mdpi.com/1999-4907/11/3/335,  https://www.jstage.jst.go.jp/article/formath/18/0/18_001/_article/-char/en.
 - SRTM Digital Elevation Data Version 4. 
 
 You can:
 
-* Filter each column by sort in boxes under the header of each column.
-* Order the columns by clicking on the column header (ascending and descending).
-* Adjust the columns are visible by clicking the Visibility button for columns.
+* Move the slider to change the year of the Landsat composite displayed. 
+* Turn on/off the 4 checkboxes at the right panel to show/hide the layers. The checkbox settings are reset when the user change the year of the Landsat composite. 
+* Click on the map. Then you will get the information about the point. The information provide is;
+    - Coordinates of the selected point
+    - The last disturbance year. If no disturbance is recorded, 0 is returned.
+    - Elevation (meter)
+    - Growing stock volume ($m^3$/ha). 
+    * 
+    * last disturbance year of the selected point 
+It takes a while until the chart is shown. Thank you for your great patience in advance.
+* The data used to create the time
+
+
 * Click the 'CSV' or 'Excel' button to save the filtered data to the.csv or.xlsx file
 * See how many entries are left in the bottom-left after screening, where it states 'Showing X to Y Z entries'
 
