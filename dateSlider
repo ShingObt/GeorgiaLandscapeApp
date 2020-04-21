@@ -134,13 +134,14 @@ Map.setCenter(-84.4161, 33.7529, 8);
 Map.style().set('cursor', 'crosshair');
 // Create an empty panel in which to arrange widgets.
 // The layout is vertical flow by default.
+
 var panel = ui.Panel({style: {width: '400px',position: "top-right"}})
     .add(ui.Label({
       value:"Landscape dataset of Georgia, United States",
       style:{fontWeight:"bold",fontSize:"20px"}
     }))
     .add(ui.Label('Click on the map. Then you will get the information about the point. It takes a while until the chart is shown. Thank you for your great patience in advance.'))
-    .add(ui.Label("If you need detailed explanation about this app, please refer to https://github.com/ShingObt"))
+    .add(ui.Label("If you need detailed explanation about this app, please refer to my GitHub repository.",{},"https://github.com/ShingObt"))
 panel.widgets().set(3,checkbox)
 panel.widgets().set(4,checkbox0)
 panel.widgets().set(5,checkbox2)
