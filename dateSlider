@@ -16,11 +16,11 @@ var lt8sr = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var ga=tiger.filterMetadata("NAME","equals","Georgia")
 var elev=ee.Image('CGIAR/SRTM90_V4').clip(ga)
-var distyear=disturbanceyear.clip(ga).
+var distyear=disturbanceyear.clip(ga)
 //================================================
 // Landsat 5 processing
 //================================================
-{
+
 var bands=['B3','B2','B1','pixel_qa']
 var lt5sr = l5
     .filterDate("1984-01-01","2013-01-01")
@@ -30,12 +30,11 @@ var series5 = lt5sr.map(function(image) {
   var cfmask= image.select('pixel_qa');
     return image.updateMask(cfmask.eq(66))
     .rename('Red','Green','Blue','pixel_qa');;
-});
-}
+})
+
 //================================================
 // Landsat 7 processing
 //================================================
-{
 var bands=['B3','B2','B1','pixel_qa']
 var lt7 = lt7t1
     .filterDate("2011-01-01","2013-12-31")
@@ -46,7 +45,6 @@ var series7 = lt7.map(function(image) {
     return image.updateMask(cfmask.eq(66))
     .rename('Red','Green','Blue','pixel_qa');
 });
-}
 //================================================
 // Landsat 8 processing
 //================================================
@@ -152,7 +150,7 @@ Map.onClick(function(coords) {
   // Create or update the location label (the second widget in the panel)
   var location = 'lon: ' + coords.lon.toFixed(2) + ' ' +
                  'lat: ' + coords.lat.toFixed(2);
-  panel.widgets().set(4, ui.Label("You are point of interest is "+location));
+  panel.widgets().set(6, ui.Label("You are point of interest is "+location));
   // panel.widgets().set(3, checkbox);
   // panel.widgets().set(4, checkbox0);
 
@@ -172,7 +170,7 @@ Map.onClick(function(coords) {
 
   // Add (or replace) the third widget in the panel by
   // manipulating the widgets list.
-  panel.widgets().set(6, chart);
+  panel.widgets().set(7, chart);
 });
 
 // Add the panel to the ui.root.
