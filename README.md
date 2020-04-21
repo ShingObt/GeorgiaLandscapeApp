@@ -18,7 +18,7 @@ This web-app is composed of 4 layers. Users can retrieve the information stored 
 
 - The time series Landsat 5/7/8 composite between 1987-2019. Entire Georgia is covered by this dataset.
 - The estimated growing stock volume (m3/ha). Only the area equivalent to path 17 row 38 in WRS-2 is covered. This layer is created as a part of my graduate study.
-- The last disturbance year of forest stands between 1987-2016. This layer is created as a part of my graduate study and summarized in [^1] [^2]. 
+- The last disturbance year of forest stands between 1987-2016. This layer is created as a part of my graduate study and summarized in the published papers https://www.mdpi.com/1999-4907/11/3/335,  https://www.jstage.jst.go.jp/article/formath/18/0/18_001/_article/-char/en
 - SRTM Digital Elevation Data Version 4. 
 
 You can:
@@ -28,11 +28,6 @@ You can:
 * Adjust the columns are visible by clicking the Visibility button for columns.
 * Click the 'CSV' or 'Excel' button to save the filtered data to the.csv or.xlsx file
 * See how many entries are left in the bottom-left after screening, where it states 'Showing X to Y Z entries'
-
-
-[^1]: Obata, Shingo et al. 2019. “Preliminary Analysis of Forest Stand Disturbances in Coastal Georgia (USA) Using Landsat Time Series Stacked Imagery.” FORMATH 18: 1–11.
-
-[^2]: Obata, Shingo, Pete Bettinger, Chris J. Cieszewski, and Roger C. Lowe III. 2020. “Mapping Forest Disturbances between 1987-2016 Using All Available Time Series Landsat TM/ETM+ Imagery: Developing a Reliable Methodology for Georgia, United States.” Forests 11(3): 335.
 
 
 ## Development
