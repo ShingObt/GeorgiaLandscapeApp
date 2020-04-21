@@ -13,36 +13,12 @@ This web-app shows the spatial forest resource information that provides the fun
 
 
 ## How to use
-This web-app is comprised of two different pages, *Interactives* and *Information*. *Interactives* page provides the interactive store location data with filters, data table, and map. The *Information* page describes about this project, instruction of the usage of this web-app, and development process.
-
-### Filters
-
-You can:
-
-* select either or both Starbucks or Yoshinoya using the left checkboxes.
-* select one or more prefecture using the right checkboxes (the prefecture name is in Japanese).
-
-### Interactive map
-
-You can:
-
-* click to grab and drag the map around
-* zoom with the '+' and '--' buttons (top-left) or with your mouse's scroll wheel
-* click a circle to open a popup with information about the store. 
-* click the button showing a broken square (top-left under the zoom options) to pick out points on the map employing a window that's draggable (click and hold the grid icon within the upper left) and resizeable (click and drag the white boxes in each corner)
-* click the layered squares button (bottom-right of the map) to select the raster data displayed on the map. The rasters you can select are
-    * OpenStreetMap
-    * Satellite imagery
-    * kernel density estimation raster for Yoshinoya
-    * kernel density estimation raster for Starbucks    
-
-### Interactive table
 
 This web-app is composed of 4 layers. Users can retrieve the information stored in each layer by manipulating the slider or clicking an arbitrary point on a map. Four layers are; 
 
 - The time series Landsat 5/7/8 composite between 1987-2019. Entire Georgia is covered by this dataset.
 - The estimated growing stock volume (m3/ha). Only the area equivalent to path 17 row 38 in WRS-2 is covered. This layer is created as a part of my graduate study.
-- The last disturbance year of forest stands between 1987-2016. This layer is created as a part of my graduate study and summarized in [^1][^2]. 
+- The last disturbance year of forest stands between 1987-2016. This layer is created as a part of my graduate study and summarized in [^1] [^2]. 
 - SRTM Digital Elevation Data Version 4. 
 
 You can:
@@ -55,7 +31,8 @@ You can:
 
 
 [^1]: Obata, Shingo et al. 2019. “Preliminary Analysis of Forest Stand Disturbances in Coastal Georgia (USA) Using Landsat Time Series Stacked Imagery.” FORMATH 18: 1–11.
-[^1]: Obata, Shingo, Pete Bettinger, Chris J. Cieszewski, and Roger C. Lowe III. 2020. “Mapping Forest Disturbances between 1987-2016 Using All Available Time Series Landsat TM/ETM+ Imagery: Developing a Reliable Methodology for Georgia, United States.” Forests 11(3): 335.
+
+[^2]: Obata, Shingo, Pete Bettinger, Chris J. Cieszewski, and Roger C. Lowe III. 2020. “Mapping Forest Disturbances between 1987-2016 Using All Available Time Series Landsat TM/ETM+ Imagery: Developing a Reliable Methodology for Georgia, United States.” Forests 11(3): 335.
 
 
 ## Development
