@@ -29,49 +29,9 @@ You can:
     - Coordinates of the selected point
     - The last disturbance year. If no disturbance is recorded, 0 is returned.
     - Elevation (meter)
-    - Growing stock volume ($m^3$/ha). 
-    * 
-    * last disturbance year of the selected point 
+    - Growing stock volume (m^3/ha). If no volume is recorded, null is returned.
+    - Time series chart of the NDVI over the time period. It is possible to export the data by clicking the export button at the top right corner of the chart.
 It takes a while until the chart is shown. Thank you for your great patience in advance.
-* The data used to create the time
-
-
-* Click the 'CSV' or 'Excel' button to save the filtered data to the.csv or.xlsx file
-* See how many entries are left in the bottom-left after screening, where it states 'Showing X to Y Z entries'
-
 
 ## Development
-
-### Data collection
-
-The store location is collected from the websites of [Yoshinoya](https://www.yoshinoya.com/en/) and [Starbucks Japan](https://www.starbucks.co.jp/en/index.html).
-
-I used [Python 3.5.1](https://www.python.org/downloads/release/python-351/) operating under [Anaconda Distribution](https://www.anaconda.com/distribution/) to scrape store information from two websites. The modules employed for the task are:
-
-* [selenium](https://pypi.org/project/selenium/) for web-scraping.
-* [pandas](https://pandas.pydata.org/) to manage and structure the scraped data.
-* [googlemaps](https://github.com/googlemaps/google-maps-services-python) to use [Geocoding API](https://developers.google.com/maps/documentation/geocoding/start) provided by Google.
-
-As a result of the scraping with Python, All the store name,store address, and store coordinates (defined by latitude and longitude) are obtained in the python code.
-
-### Interactive web-app
-
-To create interactive web-app, [R v3.5.1](https://www.r-project.org/) and [Rstudio v 1.1.423](https://rstudio.com/) are used. R Markdown based [flexdashboard](https://rmarkdown.rstudio.com/flexdashboard/) is the key feature for this ap. The R packages employed for the creation of this web-app are:
-
-* flexdashboard
-* [leaflet](https://rstudio.github.io/leaflet/) to achieve interactive mapping of the rasters and points. 
-* [DT](https://rstudio.github.io/DT/) to create interactive table.
-* [crosstalk](https://rstudio.github.io/crosstalk/) for inter-widget (between filters, table, and map) interaction.
-* [rgdal](https://cran.r-project.org/package=rgdal), [raster](https://cran.r-project.org/package=raster/raster.pdf), and [sp](https://cran.r-project.org/package=sp/sp.pdf) to handle the spatial dataset. 
-
-### Resources
-
-This web-app is located at [my portfolio site](https://shingobt.github.io/visualization/flexdashboard) (the portfolio site itself is under construction). 
-
-### Future works
-
-Remained tasks for this project are:
-
-* scraping more information from the websites such as parking lot availability and business hour.
-* adding more franchises as the object of comparison.
-* performing more advanced geospatial analysis.
+This section is under construction.
